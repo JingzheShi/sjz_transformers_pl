@@ -28,6 +28,7 @@ if __name__ == '__main__':
 
     #Phrases longer than this will be truncated, shorter ones will be padded.
     parser.add_argument('--num_steps',type=int,default=50)
+    parser.add_argument('--learning_rate',type=float,default=0.0002)
     
     #example
     parser.add_argument('--num_examples',type=int,default=None)
@@ -77,6 +78,7 @@ if __name__ == '__main__':
         dictionary_size=src_vocab_size,
         tgt_dictionary_size=tgt_vocab_size,
         batch_size=args.train_batch_size,
+        lr=args.learning_rate
     )
 
     #checkpoint
