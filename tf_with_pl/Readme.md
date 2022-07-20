@@ -6,10 +6,14 @@ To train, run
 python3 train.py
 ```
 
-To use, create an input.txt in the same dir and run
+To use, run
 
 ```bash
-python3 use.py
+python3 use.py --relative_translation_source_path=$input_file
 ```
 
-Some arguments of `train.py` can be chosen, which is written in `train.py` and `model/my_tf.py`.
+In which default `input_file` is `input.txt` in the same dir.
+
+
+
+Some arguments of `train.py` can be adjusted, which is written in `train.py` and `model/my_tf.py`.
