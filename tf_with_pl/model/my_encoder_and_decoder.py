@@ -29,7 +29,7 @@ class ScaledDotProductAttention(torch.nn.Module):
         attn=self.softmax(scores)
         context=torch.matmul(attn,V)
 
-        return context,attn
+        return context
 
 class My_MultiheadAttn_with_addnorm(torch.nn.Module):
     def __init__(self,seq_len=50,d_model=512,n_heads=8,dropout=0.1,d_v=64):
@@ -58,7 +58,7 @@ class My_MultiheadAttn_with_addnorm(torch.nn.Module):
         attn_mask=attn_mask.unsqueeze(1).repeat(1,self.n_heads,1,1)
 
         #context: [batch_size, n_heads, len_q, d_v], attn_mask:[batch_size,n_heads,len_q,len_q]
-        context, attn= ScaledDotProductAttention(dropout=0.1,d_k=self.d_k)(Q,K,V,attn_mask)
+        context= ScaledDotProductAttention(dropout=0.1,d_k=self.d_k)(Q,K,V,attn_mask)
 
         context=context.transpose(1,2).reshape(batch_size,-1,self.n_heads*self.d_v)
 

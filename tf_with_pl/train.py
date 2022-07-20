@@ -11,7 +11,7 @@ if __name__ == '__main__':
     parser=ArgumentParser()
     parser.add_argument('--data_preprocessing',type=bool,default=True)
     parser.add_argument('--weight_path',type=str,default='weights/')
-    parser.add_argument('--monitor',type=str,default='val_loss',choices=['val_loss','val_accuracy','train_loss'])
+    parser.add_argument('--monitor',type=str,default='val_loss',choices=['val_loss'])
     parser.add_argument('--gpus',type=int,default=1)
     parser.add_argument('--params_saving_path',type=str,default='params/')
     parser.add_argument('--train_batch_size',type=int,default=192)
@@ -22,6 +22,7 @@ if __name__ == '__main__':
     parser.add_argument('--top_k', type=int, default=3)
     
     parser.add_argument('--num_workers',type=int,default=14)
+    parser.add_argument('--precision',type=int, default=16,choices=[16,32])
 
 
 
@@ -67,14 +68,16 @@ if __name__ == '__main__':
     #print('tgt_vocab_size:',tgt_vocab_size) 17851
 
     #part of the arg parser is model specific, so we need to pass the partial args to the model
-    model=MyTF(num_heads=args.num_heads,
-                d_model=args.d_model,
-                d_ff=args.d_ff,
-                N=args.N,
-                seq_len=args.num_steps,
-                dictionary_size=src_vocab_size,
-                tgt_dictionary_size=tgt_vocab_size,
-                batch_size=args.train_batch_size,)
+    model=MyTF(
+        num_heads=args.num_heads,
+        d_model=args.d_model,
+        d_ff=args.d_ff,
+        N=args.N,
+        seq_len=args.num_steps,
+        dictionary_size=src_vocab_size,
+        tgt_dictionary_size=tgt_vocab_size,
+        batch_size=args.train_batch_size,
+    )
 
     #checkpoint
     checkpoint_callback=pl.callbacks.ModelCheckpoint(
@@ -87,6 +90,6 @@ if __name__ == '__main__':
 
 
     #Train.
-    trainer=pl.Trainer(callbacks=[checkpoint_callback],accelerator="gpu",devices="auto",strategy="ddp_find_unused_parameters_false",max_epochs=args.max_epochs,precision=16)
+    trainer=pl.Trainer(callbacks=[checkpoint_callback],accelerator="gpu",devices="auto",strategy="ddp_find_unused_parameters_false",max_epochs=args.max_epochs,precision=args.precision)
     trainer.fit(model,pl_dataloader)
 
